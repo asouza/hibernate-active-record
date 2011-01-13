@@ -1,0 +1,11 @@
+Trying to emulate a simple active record for java objetcs using Scala 
+
+Some examples:
+
+1) new User("alberto").save
+
+2) new User(1,"alberto").update
+
+3) new User(1).delete
+
+All kind of suggestions are welcome. 
