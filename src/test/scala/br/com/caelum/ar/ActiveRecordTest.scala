@@ -33,15 +33,15 @@ class ActiveRecordTest {
 	def shouldSaveObject {
 		var user = new User("teste",15).save
 		assertEquals(1,session.all[User].size)
-		assertEquals(1,user.getId)
+		assertEquals(1,user.id)
 	}
 	
 	@Test
 	def shouldUpdateObject {	
 		val user = new User("teste",15).save
-		user setName "Alberto"
+		user.name = "Alberto"
 		user.update
-		assertEquals("Alberto",session.all[User].get(0).getName)
+		assertEquals("Alberto",session.all[User].get(0).name)
 	}
 	
 	@Test
@@ -49,5 +49,16 @@ class ActiveRecordTest {
 		val user = new User("teste",15).save
 		user.delete
 		assertEquals(0,session.all[User].size)
+	}
+	
+	@Test
+	def shouldListAllObjects {	
+		val user = new User("teste",15).save
+		assertEquals(1,User().all.size)
+	}
+	
+	@Test(expected = classOf[IllegalArgumentException])
+	def shouldThrowIAEWhenInstanceIsNotEntity {
+		"dahfdjskfh".save
 	}
 }
