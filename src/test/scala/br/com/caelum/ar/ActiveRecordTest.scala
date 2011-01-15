@@ -54,6 +54,7 @@ class ActiveRecordTest {
 	@Test
 	def shouldListAllObjects {			
 		val user = new User("teste",15).save
+		var users = User.all
 		assertEquals(1,User.all.size)
 	}
 	
@@ -61,7 +62,29 @@ class ActiveRecordTest {
 	def shouldLoadById {	
 		val user = new User("teste",15).save
 		assertEquals(user,User.find(user.id))
+	}
+	
+	@Test
+	def shouldCount {	
+		new User("teste",15).save
+		new User("teste",15).save
+		new User("teste",15).save
+		assertEquals(3,User.count)
 	}	
+	
+	@Test
+	def shouldGetLast {	
+		val user = new User("teste",15).save
+		val user2 = new User("teste",15).save
+		assertEquals(user,User.last)
+	}
+	@Test
+	def shouldGetFirst {	
+		val user = new User("teste",15).save
+		val user2 = new User("teste",15).save
+		assertEquals(user,User.first)
+	}
+	
 	
 	@Test(expected = classOf[IllegalStateException])
 	def shouldThrowIAEWhenInstanceIsNotAEntity {

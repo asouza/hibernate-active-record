@@ -1,5 +1,6 @@
 package br.com.caelum.ar
 
+import org.hibernate.criterion.Projections
 import java.io.Serializable
 import javax.persistence.Entity
 import java.util.List
@@ -33,6 +34,12 @@ class ActiveRecord[T](obj:Object) {
 	
 	def all = Sessions.get.createCriteria(klass).list.asInstanceOf[List[T]]
 	
-	def find(id:Serializable) = Sessions.get.load(klass,id)
+	def count = Sessions.get.createCriteria(klass).setProjection(Projections.rowCount).uniqueResult.asInstanceOf[Number].intValue
+	
+	def find(id:Serializable) = Sessions.get.load(klass,id).asInstanceOf[T]
+	
+	def last = Sessions.get.createCriteria(klass).setFirstResult(this.count.intValue-1).uniqueResult.asInstanceOf[T]
+	
+	def first = Sessions.get.createCriteria(klass).setMaxResults(1).uniqueResult.asInstanceOf[T]
 	
 }
