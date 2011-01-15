@@ -2,9 +2,6 @@ package br.com.caelum.ar
 
 import javax.persistence.{ Entity, GeneratedValue, Id };
 
-object User{
-	
-}
 
 @Entity
 case class User {

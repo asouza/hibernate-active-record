@@ -57,8 +57,14 @@ class ActiveRecordTest {
 		assertEquals(1,User().all.size)
 	}
 	
-	@Test(expected = classOf[IllegalArgumentException])
-	def shouldThrowIAEWhenInstanceIsNotEntity {
+	@Test
+	def shouldLoadById {	
+		val user = new User("teste",15).save
+		assertEquals(1,User().find(user.id))
+	}	
+	
+	@Test(expected = classOf[IllegalStateException])
+	def shouldThrowIAEWhenInstanceIsNotAEntity {
 		"dahfdjskfh".save
 	}
 }
