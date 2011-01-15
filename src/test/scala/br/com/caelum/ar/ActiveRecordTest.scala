@@ -52,15 +52,15 @@ class ActiveRecordTest {
 	}
 	
 	@Test
-	def shouldListAllObjects {	
+	def shouldListAllObjects {			
 		val user = new User("teste",15).save
-		assertEquals(1,User().all.size)
+		assertEquals(1,User.all.size)
 	}
 	
 	@Test
 	def shouldLoadById {	
 		val user = new User("teste",15).save
-		assertEquals(1,User().find(user.id))
+		assertEquals(user,User.find(user.id))
 	}	
 	
 	@Test(expected = classOf[IllegalStateException])

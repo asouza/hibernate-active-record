@@ -8,8 +8,14 @@ object ActiveRecord {
 }
 
 class ActiveRecord[T](obj:Object) {	
+	var klass = obj.getClass
 	if (!obj.getClass.isAnnotationPresent(classOf[Entity])){
-		throw new IllegalStateException(obj.getClass() + " does not have @Entity annotation");
+			try{
+				klass = obj.getClass().getMethod("apply").getReturnType()
+			}
+			catch {
+				case ex:NoSuchMethodException => throw new IllegalStateException(obj.getClass() + " does not have @Entity annotation")
+			}
 	}
 	
 	def save = {		
@@ -25,8 +31,8 @@ class ActiveRecord[T](obj:Object) {
 	
 	def delete = Sessions.get.delete(obj)
 	
-	def all = Sessions.get.createCriteria(obj.getClass).list.asInstanceOf[List[T]]
+	def all = Sessions.get.createCriteria(klass).list.asInstanceOf[List[T]]
 	
-	def find(id:Serializable) = Sessions.get.load(obj.getClass,id)
+	def find(id:Serializable) = Sessions.get.load(klass,id)
 	
 }
