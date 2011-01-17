@@ -73,10 +73,15 @@ class ActiveRecordTest {
 	}	
 	
 	@Test
+	def shouldGetNoneForNoLast {
+		assertEquals(None,User.last)
+	}
+	
+	@Test
 	def shouldGetLast {	
 		val user = new User("teste",15).save
 		val user2 = new User("teste",15).save
-		assertEquals(user,User.last)
+		assertEquals(Some(user),User.last)
 	}
 	@Test
 	def shouldGetFirst {	

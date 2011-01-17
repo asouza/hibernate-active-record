@@ -38,7 +38,13 @@ class ActiveRecord[T](obj:Object) {
 	
 	def find(id:Serializable) = Sessions.get.load(klass,id).asInstanceOf[T]
 	
-	def last = Sessions.get.createCriteria(klass).setFirstResult(this.count.intValue-1).uniqueResult.asInstanceOf[T]
+	def last:Option[T] = {
+		var size = count.intValue
+		if(size>0){
+			return Some(Sessions.get.createCriteria(klass).setFirstResult(size-1).uniqueResult.asInstanceOf[T])
+		}
+		return None
+	}
 	
 	def first = Sessions.get.createCriteria(klass).setMaxResults(1).uniqueResult.asInstanceOf[T]
 	
