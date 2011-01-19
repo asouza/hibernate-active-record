@@ -4,23 +4,25 @@ import org.hibernate.criterion.Projections
 import java.io.Serializable
 import javax.persistence.Entity
 import java.util.List
+import scala.Iterable
 object ActiveRecord {
-	implicit def objectToActiveRecord[T <: Object](obj:T) = new ActiveRecord[T](obj)
+	implicit def objectToActiveRecord[T](obj:T) = new ActiveRecord[T](obj)
 }
 
-class ActiveRecord[T](obj:Object) {	
-	var klass = obj.getClass
-	if (!obj.getClass.isAnnotationPresent(classOf[Entity])){
+class ActiveRecord[T](obj:T) {	
+	import br.com.caelum.ar.ActiveRecord._
+	val asJavaObject =  obj.asInstanceOf[Object]
+	var klass = asJavaObject.getClass
+	if (!klass.isAnnotationPresent(classOf[Entity]) && !obj.isInstanceOf[Iterable[_]]){
 			try{
-				klass = obj.getClass().getMethod("apply").getReturnType()
+				klass = asJavaObject.getClass.getMethod("apply").getReturnType()
 			}
 			catch {
-				case ex:NoSuchMethodException => throw new IllegalStateException(obj.getClass() + " does not have @Entity annotation")
+				case ex:NoSuchMethodException => throw new IllegalStateException(klass + " does not have @Entity annotation")
 			}
 	}
 	
-	def save = {		
-		
+	def save = {				
 		Sessions.get.save(obj)
 		obj.asInstanceOf[T]
 	}
@@ -30,7 +32,15 @@ class ActiveRecord[T](obj:Object) {
 			obj.asInstanceOf[T]
 	}
 	
-	def delete = Sessions.get.delete(obj)
+	def delete  {
+		if(obj.isInstanceOf[Iterable[_]]){
+			val objects = obj.asInstanceOf[Iterable[_]]
+			objects.foreach(_.delete)
+		}
+		else{
+			Sessions.get.delete(obj)
+		}
+	}
 	
 	def all = Sessions.get.createCriteria(klass).list.asInstanceOf[List[T]]
 	

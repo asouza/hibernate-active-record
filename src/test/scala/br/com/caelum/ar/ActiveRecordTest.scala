@@ -32,7 +32,7 @@ class ActiveRecordTest {
 	@Test
 	def shouldSaveObject {
 		var user = new User("teste",15).save
-		assertEquals(1,session.all[User].size)
+		assertEquals(1,session.count[User])
 		assertEquals(1,user.id)
 	}
 	
@@ -48,7 +48,7 @@ class ActiveRecordTest {
 	def shouldDeleteObject {	
 		val user = new User("teste",15).save
 		user.delete
-		assertEquals(0,session.all[User].size)
+		assertEquals(0,session.count[User])
 	}
 	
 	@Test
@@ -83,6 +83,7 @@ class ActiveRecordTest {
 		val user2 = new User("teste",15).save
 		assertEquals(Some(user),User.last)
 	}
+	
 	@Test
 	def shouldGetFirst {	
 		val user = new User("teste",15).save
@@ -90,9 +91,20 @@ class ActiveRecordTest {
 		assertEquals(user,User.first)
 	}
 	
+	@Test
+	def shouldDeleteAllInsideTheList {	
+		val user = new User("teste",15).save
+		val user2 = new User("teste",15).save
+		val users = List(user,user2)
+		users.delete
+		assertEquals(0,session.count[User])
+	}	
+	
 	
 	@Test(expected = classOf[IllegalStateException])
 	def shouldThrowIAEWhenInstanceIsNotAEntity {
 		"dahfdjskfh".save
 	}
+	
+	
 }
