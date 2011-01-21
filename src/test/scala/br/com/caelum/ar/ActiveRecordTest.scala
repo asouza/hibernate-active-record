@@ -1,4 +1,6 @@
 package br.com.caelum.ar
+
+import java.util.Arrays
 import br.com.caelum.ar.Sessions._
 import br.com.caelum.ar.ActiveRecord._
 import br.com.caelum.hibernatequerydsl.PimpedSession._
@@ -92,13 +94,22 @@ class ActiveRecordTest {
 	}
 	
 	@Test
-	def shouldDeleteAllInsideTheList {	
+	def shouldDeleteAllInsideTheScalaIterable {	
 		val user = new User("teste",15).save
 		val user2 = new User("teste",15).save
-		val users = List(user,user2)
+		val users = List(user,user2)		
 		users.delete
 		assertEquals(0,session.count[User])
-	}	
+	}
+	
+	@Test
+	def shouldDeleteAllInsideTheJavaIterable {
+		val user = new User("teste",15).save
+		val user2 = new User("teste",15).save
+		val users = Arrays.asList(user,user2)
+		users.delete
+		assertEquals(0,session.count[User])
+	}		
 	
 	
 	@Test(expected = classOf[IllegalStateException])

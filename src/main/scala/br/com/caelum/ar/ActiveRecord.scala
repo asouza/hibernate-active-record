@@ -1,10 +1,8 @@
 package br.com.caelum.ar
-
-import org.hibernate.criterion.Projections
-import java.io.Serializable
 import javax.persistence.Entity
+import java.io.Serializable
 import java.util.List
-import scala.Iterable
+import org.hibernate.criterion.Projections
 object ActiveRecord {
 	implicit def objectToActiveRecord[T](obj:T) = new ActiveRecord[T](obj)
 }
@@ -13,7 +11,7 @@ class ActiveRecord[T](obj:T) {
 	import br.com.caelum.ar.ActiveRecord._
 	val asJavaObject =  obj.asInstanceOf[Object]
 	var klass = asJavaObject.getClass
-	if (!klass.isAnnotationPresent(classOf[Entity]) && !obj.isInstanceOf[Iterable[_]]){
+	if (!klass.isAnnotationPresent(classOf[Entity]) && !obj.isInstanceOf[scala.Iterable[_]] && !obj.isInstanceOf[java.lang.Iterable[_]]){
 			try{
 				klass = asJavaObject.getClass.getMethod("apply").getReturnType()
 			}
@@ -31,14 +29,12 @@ class ActiveRecord[T](obj:T) {
 			Sessions.get.update(obj)
 			obj.asInstanceOf[T]
 	}
-	
 	def delete  {
-		if(obj.isInstanceOf[Iterable[_]]){
-			val objects = obj.asInstanceOf[Iterable[_]]
-			objects.foreach(_.delete)
-		}
-		else{
-			Sessions.get.delete(obj)
+		import scala.collection.JavaConversions._
+		obj match {
+			case items:scala.Iterable[_] => items.foreach(_.delete)
+			case items:java.lang.Iterable[_] => items.foreach(_.delete)
+			case _ => Sessions.get.delete(obj)
 		}
 	}
 	
