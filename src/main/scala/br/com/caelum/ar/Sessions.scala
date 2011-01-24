@@ -8,7 +8,7 @@ object Sessions{
 		perThreadSessions.set(session)
 	}
 	
-	def remove(session:Session){
+	def remove{
 		perThreadSessions.remove()
 	}
 	

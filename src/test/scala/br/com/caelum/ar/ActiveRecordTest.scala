@@ -28,7 +28,7 @@ class ActiveRecordTest {
 			session.getTransaction().rollback();
 		}
 		session.close
-		Sessions remove session
+		Sessions remove
 	}	
 	
 	@Test
