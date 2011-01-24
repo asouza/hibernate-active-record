@@ -4,7 +4,7 @@ import java.io.Serializable
 import java.util.List
 import org.hibernate.criterion.Projections
 object ActiveRecord {
-	implicit def objectToActiveRecord[T](obj:T) = new ActiveRecord[T](obj)
+	implicit def objectToActiveRecord[T](obj:T) = new ActiveRecord[T](obj)	
 }
 
 class ActiveRecord[T](obj:T) {	
